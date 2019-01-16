@@ -1,0 +1,28 @@
+{
+  "name": "bamazon",
+  "version": "1.0.0",
+  "description": "Amazon clone with MySQL DB",
+  "main": "bamazonCustomer.js",
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "cli-table2": "^0.2.0",
+    "first-run": "^1.2.0",
+    "inquirer": "^6.2.1",
+    "mysql": "^2.16.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jack87/bamazon.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jack87/bamazon/issues"
+  },
+  "homepage": "https://github.com/Jack87/bamazon#readme"
+}
