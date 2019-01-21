@@ -91,6 +91,31 @@ function updateQOH() {
     });
 }
 
+function updatePrice() {
+    inquirer.prompt([
+      {
+        name    : "adjID",
+        message : "Which product do you want to update Price for? (Enter the SKU)",
+        validate: function (value) {
+                var valid = !isNaN(parseInt(value));
+                return valid || 'Please enter a valid SKU.';
+        },
+        filter  : Number
+      },
+      {
+        name    : "adjPrice",
+        message : "How much would you like to sell this product for?",
+        validate: function (value) {
+          var valid = !isNaN(parseFloat(value));
+          return valid || 'Please enter a valid dollar ammount X.XX';
+        },
+        filter  : Number
+      }
+    ]).then(function(answers){
+      checkStock(answers);
+    });
+}
+
 function checkStock(answers) {
     var query  = "SELECT stock_quantity, price, product_name from products ";
         query += "WHERE item_id = ?";
@@ -161,8 +186,29 @@ function addProduct() {
             filter  : Number
         }
       ]).then(function(answers){
-        console.log("Magic: " + answers.prdName + " " + answers.dptName + " " + answers.itmPrice + " " + answers.itmQTY + " ")
+          createItem(toTitleCase(answers.prdName), toTitleCase(answers.dptName), parseFloat(answers.itmPrice), parseInt(answers.itmQTY));
+          viewProducts();
+          console.log(chalk.green(toTitleCase(answers.prdName) + " has been added to bAmazon inventory."));
       });  
+}
+
+function createItem(name, departmant, price, quantity) {
+    var query  = "INSERT INTO products (product_name, department_name, price, stock_quantity) ";
+        query += "VALUES (?, ?, ?, ?) ";
+    connection.query(
+    query,
+    [name, departmant, price, quantity],
+        function (err, res) {
+            if (err) throw err;
+        }
+    );
+}
+
+// Title case a string
+function toTitleCase(str) {
+    return str.replace(/\w\S*/g, function(txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
 }
 
 function displayTable(data) {
@@ -196,7 +242,7 @@ module.exports = {
                 name: "mgnrTasks",
                 type: "list",
                 message: "What would you like to do?",
-                choices : ["View Inventory", "View Low Inventory","Update QOH","Add New Product", "Exit"]
+                choices : ["View Inventory", "View Low Inventory", "Update QOH", "Update Price", "Add New Product", "Exit"]
             }
             ])
         .then(function (answers) {
@@ -206,6 +252,8 @@ module.exports = {
                 viewLowQty();
             } else if (answers.mgnrTasks === "Update QOH") {
                 updateQOH();
+            } else if (answers.mgnrTasks === "Update Price") {
+                updatePrice();
             } else if (answers.mgnrTasks === "Add New Product") {
                 addProduct();
             } else {

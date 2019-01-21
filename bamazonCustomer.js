@@ -25,8 +25,8 @@ connection.connect(function(err) {
     // console.log("connected as id " + connection.threadId + "\n");
     firstRun.clear();
     if (firstRun) {renderLogo()};
-    Manager.managerTasks();
-    //displayAllProducts()
+    // mManager.managerTasks();
+    displayAllProducts()
 });
 
 function renderLogo() {
