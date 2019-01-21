@@ -22,6 +22,17 @@ connection.connect(function(err) {
     // console.log("connected as id " + connection.threadId + "\n");
 });
 
+function renderLogo() {
+    console.log('\033c'); // clears out the terminal.
+    console.log(chalk.blue   (" _        _                                      "));
+    console.log(chalk.blue   ("| |__    / \\    ___ __ _ _ ______ ___   __ _    "));
+    console.log(chalk.yellow ("| `_ \\  / _ \\  / _ ' _` | '_ \\ __/ _ \\ / _` |"));
+    console.log(chalk.yellow ("| |_) |/ ___ \\| | | | | | |_) \\_| (_) | | | |  "));
+    console.log(chalk.green  ("|_,__//_/   \\_|_| |_| |_|_.__|___\\___/|_| |_|  "));
+    console.log(chalk.magenta("bAmazon here to enhance your shopping experince. "));
+    console.log(chalk.gray   ("──────────────────────────────────────────────── "));
+}
+
 function viewProducts() {
     var query = "SELECT * FROM products";
     connection.query(
@@ -49,6 +60,111 @@ function viewLowQty() {
     ); 
 }
 
+function updateQOH() {
+    inquirer.prompt([
+      {
+        name    : "adjID",
+        message : "Which product do you want to update quantity on hand for? (Enter the SKU)",
+        validate: function (value) {
+                var valid = !isNaN(parseInt(value));
+                return valid || 'Please enter a valid SKU.';
+        },
+        filter  : Number
+      },
+      {
+        name    : "adjTasks",
+        type    : "list",
+        message : "What kind of adjustment would you like to do?",
+        choices : ["Add to QOH", "Subtract from QOH"]
+      },
+      {
+        name    : "adjQTY",
+        message : "How much would you like to adjust?",
+        validate: function (value) {
+          var valid = !isNaN(parseInt(value));
+          return valid || 'Please enter a whole number';
+        },
+        filter  : Number
+      }
+    ]).then(function(answers){
+      checkStock(answers);
+    });
+}
+
+function checkStock(answers) {
+    var query  = "SELECT stock_quantity, price, product_name from products ";
+        query += "WHERE item_id = ?";
+    connection.query(
+      query,
+      answers.adjID,
+      function (err, res) {
+        if (err) throw err;
+        var reqAdjQTY = parseInt(answers.adjQTY);
+        var currentQTY = parseInt(res[0].stock_quantity);
+        var selItem = res[0].product_name;
+        var newQTY = ""
+        if (answers.adjTasks === "Add to QOH"){
+            newQTY = currentQTY + reqAdjQTY;
+        } else if (answers.adjTasks === "Subtract from QOH"){
+            newQTY = currentQTY - reqAdjQTY;
+        }
+        updateQuantity(answers.adjID, newQTY);
+        console.log(chalk.yellow(selItem + " has QOH been updated there is now " + newQTY + " in stock."))
+        module.exports.managerTasks();
+        }
+    )
+}
+
+function updateQuantity(id, newQTY) {
+    var query  = "UPDATE products ";
+        query += "SET stock_quantity = ? ";
+        query += "WHERE item_id = ?";
+    connection.query(
+      query,
+      [newQTY, id],
+      function (err, res) {
+        if (err) throw err;
+      }
+    );
+}
+
+function addProduct() {
+    inquirer.prompt([
+        {
+            name    : "prdName",
+            type    : "input",
+            message : "What is the product name?"
+            // filter  : String
+        },
+        {
+            name    : "dptName",
+            type    : "input",
+            message : "What is the departmant this product belongs to?"
+            // filter  : String
+        },
+        {
+            name    : "itmPrice",
+            message : "What price will this be sold for?",
+            validate: function (value) {
+              var valid = !isNaN(parseFloat(value));
+              return valid || "Please enter a dollar value X.XX";
+            },
+            filter  : Number
+        },
+        {
+            name    : "itmQTY",
+            message : "How much is instock?",
+            validate: function (value) {
+                var valid = !isNaN(parseInt(value));
+                return valid || "Please enter a whole number";
+            },
+            filter  : Number
+        }
+      ]).then(function(answers){
+        console.log("Magic: " + answers.prdName + " " + answers.dptName + " " + answers.itmPrice + " " + answers.itmQTY + " ")
+      });  
+}
+
 function displayTable(data) {
     var table = new Table({
       head: ["SKU", "Product", "Department", "Price", "Quantity on Hand"],
@@ -74,25 +190,28 @@ function displayTable(data) {
 
 module.exports = {
     managerTasks: function () {
+        console.log(chalk.yellow("Manager Console:"))
         inquirer.prompt([
             {
                 name: "mgnrTasks",
                 type: "list",
                 message: "What would you like to do?",
-                choices : ["View Products for Sale", "View Low Inventory","Add to Inventory","Add New Product", "Exit"]
+                choices : ["View Inventory", "View Low Inventory","Update QOH","Add New Product", "Exit"]
             }
             ])
         .then(function (answers) {
-            if (answers.mgnrTasks === "View Products for Sale") {
-                console.log('\033c'); // clears out the terminal... usually.
+            if (answers.mgnrTasks === "View Inventory") {
                 viewProducts();
             } else if (answers.mgnrTasks === "View Low Inventory") {
-                console.log('\033c'); // clears out the terminal... usually.
                 viewLowQty();
+            } else if (answers.mgnrTasks === "Update QOH") {
+                updateQOH();
+            } else if (answers.mgnrTasks === "Add New Product") {
+                addProduct();
             } else {
                 console.log('\033c'); // clears out the terminal.
                 renderLogo()
-                console.log(chalk.red("Thanks for shopping with bAmazon; comeback soon!"));
+                console.log(chalk.red("Thanks for managing bAmazon store; come back soon!"));
                 process.exit();
             }
         });

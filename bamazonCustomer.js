@@ -171,7 +171,7 @@ function exitNow() {
       } else {
         console.log('\033c'); // clears out the terminal.
         renderLogo()
-        console.log(chalk.red("Thanks for shopping with bAmazon; comeback soon!"));
+        console.log(chalk.red("Thanks for shopping with bAmazon; come back soon!"));
         connection.end()
         process.exit();
       }
