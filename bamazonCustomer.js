@@ -25,7 +25,7 @@ connection.connect(function(err) {
     // console.log("connected as id " + connection.threadId + "\n");
     firstRun.clear();
     if (firstRun) {renderLogo()};
-    // mManager.managerTasks();
+    // Manager.managerTasks();
     displayAllProducts()
 });
 
@@ -82,7 +82,7 @@ function selectProduct() {
         message : "Which product do you want to buy? (Enter the SKU)",
         validate: function (value) {
             if (value = "`manager"){
-                Manager.managerTasks
+                Manager.managerTasks()
             } else {
                 var valid = !isNaN(parseInt(value));
                 return valid || 'Please enter a valid SKU.';
