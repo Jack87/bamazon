@@ -19,9 +19,9 @@ Photos are not needed because you have pretty tables!
 - Supvisor functions not yet available but coming soon
 
 ## Screenshots
-![Customer Experience]()
+![Customer Experience](https://raw.githubusercontent.com/Jack87/bamazon/master/images/customerExperience.png)
 
-![Manager Tasks]()
+![Manager Tasks](https://raw.githubusercontent.com/Jack87/bamazon/master/images/managerTasks.png)
 
 ## Walkthrough Video
-[![Video Demo]()](https://drive.google.com/file/d/1CrKGyT0gyurrlTHlg3uhBZEn3eOckOVX/view?usp=sharing)
+[![Video Demo](https://raw.githubusercontent.com/Jack87/bamazon/master/images/videoDemoThumb.png)](https://drive.google.com/file/d/1CrKGyT0gyurrlTHlg3uhBZEn3eOckOVX/view?usp=sharing)
