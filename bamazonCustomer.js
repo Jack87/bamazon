@@ -3,8 +3,11 @@ var inquirer = require("inquirer");
 var Table = require("cli-table2");
 var chalk = require("chalk");
 var firstRun = require('first-run');
-var Manager = require("./bamazonManager.js");
-var Supervisor = require("./bamazonSupervisor.js");
+// var Manager = require("./bamazonManager.js");
+// var Supervisor = require("./bamazonSupervisor.js");
+// var exec = require("child_process");
+// var exec = require('child_process').exec;
+// var exec = require('child_process').exec;
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -75,20 +78,32 @@ function displayTable(data) {
     console.log(table.toString());
 }
 
+function executeManager() {
+    // exec.('./bamazonManager.js').spawn();
+    // exec('node ./bamazonManager.js')
+    // Manager.managerTasks()
+    // process.exit(Manager.managerTasks())
+    // Manager.tasksList();
+    // console.log(" rgus")
+    // exec('node bamazonManager.js');
+};
+
 function selectProduct() {
     inquirer.prompt([
       {
         name    : "product_id",
         message : "Which product do you want to buy? (Enter the SKU)",
         validate: function (value) {
-            if (value = "`manager"){
-                Manager.managerTasks()
+            if (value == "`manager" || value == "`upupdowndownleftrightleftrightbastart") {
+                // process.exit()
+                executeManager();
+                
             } else {
                 var valid = !isNaN(parseInt(value));
                 return valid || 'Please enter a valid SKU.';
             }
         },
-        filter: Number
+        // filter: Number
       },
       {
         name    : "quantity",
@@ -166,7 +181,7 @@ function exitNow() {
     ])
     .then(function (answers) {
       if (answers.exitNow === "Keep Shopping") {
-        console.log('\033c'); // clears out the terminal... usually.
+        console.log('\033c'); // clears out the terminal.
         displayAllProducts();
       } else {
         console.log('\033c'); // clears out the terminal.

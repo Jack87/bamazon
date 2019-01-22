@@ -4,8 +4,11 @@
   "description": "Amazon clone with MySQL DB",
   "main": "bamazonCustomer.js",
   "dependencies": {
+    "build": "^0.1.4",
     "chalk": "^2.4.2",
+    "child_process": "^1.0.2",
     "cli-table2": "^0.2.0",
+    "fibers": "^3.1.1",
     "first-run": "^1.2.0",
     "inquirer": "^6.2.1",
     "mysql": "^2.16.0"

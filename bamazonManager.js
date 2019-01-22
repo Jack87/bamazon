@@ -19,7 +19,10 @@ var connection = mysql.createConnection({
   
 connection.connect(function(err) {
     if (err) throw err;
+    // module.exports.managerTasks()
     // console.log("connected as id " + connection.threadId + "\n");
+    renderLogo()
+    tasksList();
 });
 
 function renderLogo() {
@@ -41,7 +44,8 @@ function viewProducts() {
         if (err) throw err;
             console.log(chalk.yellow("Products in System:"));
             displayTable(res);
-            module.exports.managerTasks();
+            // module.exports.managerTasks();
+            tasksList()
         }
     ); 
 }
@@ -55,7 +59,8 @@ function viewLowQty() {
         if (err) throw err;
             console.log(chalk.yellow("Products with Low Inventroy:"));
             displayTable(res);
-            module.exports.managerTasks();
+            // module.exports.managerTasks();
+            tasksList()
         }
     ); 
 }
@@ -112,7 +117,17 @@ function updatePrice() {
         filter  : Number
       }
     ]).then(function(answers){
-      checkStock(answers);
+        var query  = "UPDATE products ";
+        query += "SET price = ? ";
+        query += "WHERE item_id = ?";
+        connection.query(
+        query,
+        [answers.adjPrice, answers.adjID],
+        function (err, res) {
+            if (err) throw err;
+        }
+        );
+        tasksList()
     });
 }
 
@@ -122,22 +137,27 @@ function checkStock(answers) {
     connection.query(
       query,
       answers.adjID,
-      function (err, res) {
-        if (err) throw err;
-        var reqAdjQTY = parseInt(answers.adjQTY);
-        var currentQTY = parseInt(res[0].stock_quantity);
-        var selItem = res[0].product_name;
-        var newQTY = ""
-        if (answers.adjTasks === "Add to QOH"){
-            newQTY = currentQTY + reqAdjQTY;
-        } else if (answers.adjTasks === "Subtract from QOH"){
-            newQTY = currentQTY - reqAdjQTY;
-        }
-        updateQuantity(answers.adjID, newQTY);
-        console.log(chalk.yellow(selItem + " has QOH been updated there is now " + newQTY + " in stock."))
-        module.exports.managerTasks();
+        function (err, res) {
+            if (err) throw err;
+            var reqAdjQTY = parseInt(answers.adjQTY);
+            var currentQTY = parseInt(res[0].stock_quantity);
+            var selItem = res[0].product_name;
+            var newQTY = ""
+            if (answers.adjTasks === "Add to QOH"){
+                newQTY = currentQTY + reqAdjQTY;
+            } else if (answers.adjTasks === "Subtract from QOH"){
+                newQTY = currentQTY - reqAdjQTY;
+            }
+            updateQuantity(answers.adjID, newQTY);
+            console.log(chalk.yellow(selItem + " has QOH been updated there is now " + newQTY + " in stock."))
+            // module.exports.managerTasks();
+            tasksList()
         }
     )
+}
+
+function updateQuantity(id, newQTY) {
+
 }
 
 function updateQuantity(id, newQTY) {
@@ -233,10 +253,8 @@ function displayTable(data) {
     console.log(table.toString());
 }
 
-
-module.exports = {
-    managerTasks: function () {
-        console.log(chalk.yellow("Manager Console:"))
+function tasksList() {
+    console.log(chalk.yellow("Manager Console:"))
         inquirer.prompt([
             {
                 name: "mgnrTasks",
@@ -263,6 +281,11 @@ module.exports = {
                 process.exit();
             }
         });
+}
+
+module.exports = {
+    managerTasks: function () {
+        tasksList();
     },
     bar: function () {
       // whatever
