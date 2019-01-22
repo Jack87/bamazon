@@ -1,2 +1,27 @@
-# bamazon
+# bAmazon™
+
+### enhance your shopping experince with a CLI interface. Noone needs a GUI!
 Amazon clone with MySQL DB
+
+bAmazon is designed to help every 1337 user to be able to shop via command line!
+
+Photos are not needed because you have pretty tables!
+
+## Features
+- Choose from a dozen or so products 
+- Input validation
+- Purchase log
+- Total cost calculation
+
+## Managers
+- Manager application features in helper app
+- Cheat code coming soon to enter manager mode from customer experince
+- Supvisor functions not yet available but coming soon
+
+## Screenshots
+![Customer Experience]()
+
+![Manager Tasks]()
+
+## Walkthrough Video
+[![Video Demo]()](https://drive.google.com/file/d/1CrKGyT0gyurrlTHlg3uhBZEn3eOckOVX/view?usp=sharing)
