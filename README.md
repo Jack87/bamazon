@@ -1,6 +1,6 @@
 # bAmazon™
 
-### enhance your shopping experince with a CLI interface. Noone needs a GUI!
+### Enhance your shopping experince with a CLI interface. GUI is for N00bs!
 Amazon clone with MySQL DB
 
 bAmazon is designed to help every 1337 user to be able to shop via command line!
